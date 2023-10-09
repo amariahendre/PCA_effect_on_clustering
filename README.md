@@ -1,45 +1,53 @@
-# PCA Effect on Clustering using Streamlit
+# PCA effect on clustering 
 
-This application allows users to visualize the effect of PCA (Principal Component Analysis) on clustering using the KMeans algorithm. It also provides an interface for users to upload datasets and adjust parameters for better insights.
+This is a Streamlit app that allows users to visualize the effect of Principal Component Analysis (PCA) on clustering data. Users can upload their data, apply PCA, perform clustering using the KMeans algorithm, and visualize the results using t-SNE.
 
-## Features:
-1. Upload datasets in `.npy`, `.csv`, or `.txt` format.
-2. View the first 5 rows of the uploaded dataset.
-3. Option to apply `log2(x+1)` transformation to the data.
-4. Adjust the number of clusters for the KMeans algorithm.
-5. Adjust the number of PCA components.
-6. Visualization of clusters using t-SNE.
-7. An elbow method plot to help determine the optimal number of clusters.
+## Features
 
-## How to use:
-1. Run the Streamlit app.
-2. Upload your dataset using the sidebar.
-3. Adjust parameters using the sidebar sliders.
-4. View the results and visualizations on the main pane.
+- Upload data files in formats: `.npy`, `.csv`, or `.txt`.
+- Optional log2(x+1) data transformation.
+- Configure the number of PCA components.
+- Configure the number of clusters for KMeans.
+- Visualize data clusters using t-SNE.
+- Determine the optimal number of clusters using the elbow method.
 
-## Requirements:
-To run the app, you need to have the following libraries installed:
-- streamlit
+## Getting Started
+
+### Requirements
+
+- Python
+- Streamlit
 - numpy
 - pandas
 - scikit-learn
 - matplotlib
 
-You can install these using pip:
-```
+### Installation
+
+Install the required packages using pip:
+
+```bash
 pip install streamlit numpy pandas scikit-learn matplotlib
 ```
 
-## Running the app:
-Navigate to the directory containing the Streamlit script and execute:
-```
+### Running the App
+
+Navigate to the directory containing the Streamlit app script and run:
+
+```bash
 streamlit run your_script_name.py
 ```
-Replace `your_script_name.py` with the name you saved the provided script as.
 
-## Credits:
-Made with ❤️ in Streamlit by [@anamariahendre](https://www.linkedin.com/in/anamariahendre/)
+Replace `your_script_name.py` with the name of the script if it's different.
 
----
+### Usage
 
-Feel free to customize this README as per your needs. Would you like me to save this as a `.md` file for you?
+1. Upload your data file using the sidebar file uploader.
+2. Adjust the number of PCA components and clusters using the sliders.
+3. View the t-SNE visualization and elbow method plot on the main page.
+4. Optional: Apply a log2(x+1) transformation to the data.
+
+## Author
+
+- **Ana Maria Hendre** - [LinkedIn](https://www.linkedin.com/in/anamariahendre/)
+
