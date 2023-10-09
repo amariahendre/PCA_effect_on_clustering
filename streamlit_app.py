@@ -18,9 +18,7 @@ if uploaded_file is not None:
     if uploaded_file.name.endswith('.npy'):
         data = np.load(uploaded_file)
     elif uploaded_file.name.endswith('.csv'):
-        data_df = pd.read_csv(uploaded_file)
-        st.write('First 5 rows of your data:')
-        st.write(data_df.head())
+        data = pd.read_csv(uploaded_file)
         data = data_df.values
     elif uploaded_file.name.endswith('.txt'):
         data = np.loadtxt(uploaded_file)
