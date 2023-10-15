@@ -7,6 +7,8 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 
+st.set_page_config(page_title='PCA effect on clustering')
+
 st.title('PCA effect on clustering')
 
 uploaded_file = st.sidebar.file_uploader("Upload your data file (.npy, .csv, .txt)")
