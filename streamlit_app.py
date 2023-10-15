@@ -40,7 +40,7 @@ if uploaded_file is not None:
     z = pca.fit_transform(data)
 
     # Clustering
-    kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+    kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=42)
     cluster_labels = kmeans.fit_predict(z)
 
     # t-SNE visualization
@@ -57,7 +57,7 @@ if uploaded_file is not None:
     inertia = []
     K = range(1, 11)
     for k in K:
-        kmeanModel = KMeans(n_clusters=k)
+        kmeanModel = KMeans(n_clusters=k, n_init=10)
         kmeanModel.fit(z)
         inertia.append(kmeanModel.inertia_)
 
