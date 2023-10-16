@@ -1,6 +1,6 @@
 # PCA effect on clustering 
 
-This is a Streamlit app that allows users to visualize the effect of Principal Component Analysis (PCA) on clustering data. Users can upload their data, apply PCA, perform clustering using the KMeans algorithm, and visualize the results using t-SNE.
+This is a Streamlit app that allows users to visualize the effect of Principal Component Analysis (PCA) on clustering data. Users can upload their data, apply PCA, perform clustering using the KMeans algorithm, and visualize the results.
 
 ## Features
 
