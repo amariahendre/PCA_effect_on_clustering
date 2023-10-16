@@ -6,6 +6,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
+from sklearn.metrics import silhouette_score
 
 st.set_page_config(page_title='PCA effect on clustering')
 
