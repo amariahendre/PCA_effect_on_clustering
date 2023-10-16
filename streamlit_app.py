@@ -1,91 +1,102 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import seaborn as sns
 from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
+import matplotlib.pyplot as plt
 from sklearn.metrics import silhouette_score
-
-st.set_page_config(page_title='PCA effect on clustering')
 
 st.title('PCA effect on clustering')
 
 uploaded_file = st.sidebar.file_uploader("Upload your data file (.npy, .csv, .txt)")
 
-# If a new file is uploaded, overwrite the default data
 if uploaded_file is not None:
 
-    # Load data based on file format
     if uploaded_file.name.endswith('.npy'):
         data = np.load(uploaded_file)
     elif uploaded_file.name.endswith('.csv'):
-        data = pd.read_csv(uploaded_file)
-        data = data_df.values
+        data = pd.read_csv(uploaded_file).values
     elif uploaded_file.name.endswith('.txt'):
         data = np.loadtxt(uploaded_file)
     
     st.sidebar.write('Data shape:', data.shape)
     st.sidebar.write("---")
 
-    # Add checkbox for data transformation
     apply_transformation = st.sidebar.checkbox('Apply log2(x+1) transformation to data', value=True)
     if apply_transformation:
         data = np.log2(data + 1)
 
-    # Sidebar options
-    n_clusters = st.sidebar.slider('Number of Clusters', 1, 10, 3)
-    n_components = st.sidebar.slider('Number of PCA components', 10, 500, 50)
+    n_clusters = st.sidebar.text_input('Number of Clusters', '2,3,5,8,10').split(',')
+    n_clusters = [int(k) for k in n_clusters]
 
-    # PCA
-    pca = PCA(n_components=n_components)
-    z = pca.fit_transform(data)
+    n_components = st.sidebar.text_input('Number of PCA components', '2,5,10,50,100,500').split(',')
+    n_components = [int(pc) for pc in n_components]
 
-    # Clustering
-    kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=42)
-    cluster_labels = kmeans.fit_predict(z)
-    
-    silhouette_avg = silhouette_score(z, cluster_labels)
-    st.write(f'Silhouette score for {n_clusters} clusters and {n_components} PCs: {silhouette_avg:.2f}')
+    results = {}
+    wss_plot_data = {}
 
+    for i, pc in enumerate(n_components):
+        pca = PCA(n_components=pc)
+        X_pca = pca.fit_transform(data)
         
-    # t-SNE visualization
-    tsne = TSNE(n_components=2, random_state=42, perplexity=40)
-    z_tsne = tsne.fit_transform(z)
+        pc_results = {}
+        wss_values = []
+        
+        for j, k in enumerate(n_clusters):
+            kmeans = KMeans(n_clusters=k, random_state=42)
+            cluster_labels = kmeans.fit_predict(X_pca)
+            score = silhouette_score(X_pca, cluster_labels)
+            pc_results[k] = score
+            wss_values.append(kmeans.inertia_)
 
-    # Cluster visualization
-    fig, ax = plt.subplots(figsize=(8, 6))
-    for label in np.unique(cluster_labels):
-        idx = cluster_labels == label
-        ax.scatter(z_tsne[idx, 0], z_tsne[idx, 1], label=f"Cluster {label}", alpha=0.7)
+        results[pc] = pc_results
+        wss_plot_data[pc] = wss_values
 
-    # Elbow method plot
-    inertia = []
-    K = range(1, 11)
-    for k in K:
-        kmeanModel = KMeans(n_clusters=k, n_init=10)
-        kmeanModel.fit(z)
-        inertia.append(kmeanModel.inertia_)
+    df = pd.DataFrame(results).T
+    df.columns = [f'k={k}' for k in df.columns]
+    plt.figure(figsize=(10, 6))
+    sns.heatmap(df, cmap='YlGnBu', annot=True, fmt=".2f", linewidths=.5)
+    plt.title('Silhouette Scores for Different PCA Components and k values')
+    plt.xlabel('Number of Clusters (k)')
+    plt.ylabel('Number of PCA Components')
+    st.pyplot(plt)
 
-    ax.set_title(f"{n_components} Principal Components with {n_clusters} Clusters")
-    ax.legend()
+    plt.figure(figsize=(10, 6))
+    for pc, wss_values in wss_plot_data.items():
+        plt.plot(n_clusters, wss_values, '-o', label=f'PC={pc}')
+    plt.xlabel('Number of clusters')
+    plt.ylabel('WSS')
+    plt.legend()
+    plt.title(f'Elbow Method for Various PCA Components')
+    st.pyplot(plt)
 
-    st.pyplot(fig)
+    # fig, axs = plt.subplots(len(n_components), len(n_clusters), figsize=(15, 15))
+    # for i, pc in enumerate(n_components):
+    #     pca = PCA(n_components=pc)
+    #     X_pca = pca.fit_transform(data)
     
-    fig, ax = plt.subplots()
-    ax.plot(K, inertia, 'bx-')
-    ax.set_xlabel('Number of clusters')
-    ax.set_ylabel('WSS')
-    ax.set_title('The Elbow Method showing the optimal k')
-    st.pyplot(fig)
+    #     for j, k in enumerate(n_clusters):
+    #         kmeans = KMeans(n_clusters=k, random_state=42)
+    #         cluster_labels = kmeans.fit_predict(X_pca)
+
+    #         tsne = TSNE(n_components=2, random_state=42, perplexity=40)
+    #         z_tsne = tsne.fit_transform(X_pca)
+
+    #         for label in np.unique(cluster_labels):
+    #             idx = cluster_labels == label
+    #             axs[i, j].scatter(z_tsne[idx, 0], z_tsne[idx, 1], label=f"Cluster {label}", alpha=0.7)
+    #         axs[i, j].set_title(f"PC={pc}, k={k}")
+
+    # plt.tight_layout() 
+    # st.pyplot(fig)
 
 else:
     st.write("Please upload a data file to proceed.")
 
-
 st.sidebar.write("---")
 st.sidebar.markdown(
-                '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="16">&nbsp by <a href="https://www.linkedin.com/in/anamariahendre/">@anamariahendre</a></h6>',
-                unsafe_allow_html=True,
-            )
+    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="16">&nbsp by <a href="https://www.linkedin.com/in/anamariahendre/">@anamariahendre</a></h6>',
+    unsafe_allow_html=True,
+)
