@@ -44,7 +44,11 @@ if uploaded_file is not None:
     # Clustering
     kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=42)
     cluster_labels = kmeans.fit_predict(z)
+    
+    silhouette_avg = silhouette_score(z, cluster_labels)
+    st.write(f'Silhouette score for {n_clusters} clusters and {n_components} PCs: {silhouette_avg:.2f}')
 
+        
     # t-SNE visualization
     tsne = TSNE(n_components=2, random_state=42, perplexity=40)
     z_tsne = tsne.fit_transform(z)
