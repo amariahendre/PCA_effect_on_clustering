@@ -8,8 +8,7 @@ This is a Streamlit app that allows users to visualize the effect of Principal C
 - Optional log2(x+1) data transformation.
 - Configure the number of PCA components.
 - Configure the number of clusters for KMeans.
-- Visualize data clusters using t-SNE.
-- Determine the optimal number of clusters using the elbow method.
+- Determine the optimal number of clusters using the elbow and silhouette methods.
 
 ## Getting Started
 
@@ -21,6 +20,7 @@ This is a Streamlit app that allows users to visualize the effect of Principal C
 - pandas
 - scikit-learn
 - matplotlib
+- seaborn
 
 ### Installation
 
@@ -43,8 +43,8 @@ Replace `your_script_name.py` with the name of the script if it's different.
 ### Usage
 
 1. Upload your data file using the sidebar file uploader.
-2. Adjust the number of PCA components and clusters using the sliders.
-3. View the t-SNE visualization and elbow method plot on the main page.
+2. Adjust the number of PCA components and clusters.
+3. View the silhouette and elbow method plot on the main page.
 4. Optional: Apply a log2(x+1) transformation to the data.
 
 ## Author
